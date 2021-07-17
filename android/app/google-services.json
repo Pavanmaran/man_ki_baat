@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "123990291436",
+    "project_id": "the-hidden-writters",
+    "storage_bucket": "the-hidden-writters.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123990291436:android:772306923ca960c18c46c9",
+        "android_client_info": {
+          "package_name": "the_hidden_writters.com.example.the_hidden_writters"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123990291436-g6cjlm977jro4cmu8agchigrekbekf1m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "the_hidden_writters.com.example.the_hidden_writters",
+            "certificate_hash": "b24ef8d9c38cd57e41b079aba0852d25759ed5bd"
+          }
+        },
+        {
+          "client_id": "123990291436-ko14ov2v7n7fr2k0hgtirsroashj1poc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiGDTE1exBfoFUHgKDGsK6h-F892WdBOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123990291436-ko14ov2v7n7fr2k0hgtirsroashj1poc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
