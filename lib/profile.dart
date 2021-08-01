@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:flutter/rendering.dart';
+import 'package:the_hidden_writters/admin.dart';
 import 'package:the_hidden_writters/editprofile.dart';
+import 'package:the_hidden_writters/signup.dart';
 import 'package:the_hidden_writters/tasks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +26,8 @@ class profilePage extends StatefulWidget {
 
 class _profilePageState extends State<profilePage> {
   String pic='https://firebasestorage.googleapis.com/v0/b/the-hidden-writters.appspot.com/o/files%2FXfCqF-2021-07-17%2022%3A46%3A52.146436-img.png?alt=media&token=3fb25a41-9b1d-4e5c-9cf7-72d241b9db40';
-  String birth = 'Birthday : 19/01/1999';
-  String bio = 'Professional Writer\n'
-      'Entreprenour\n'
-      'Student\n'
-      'Author\n';
+  String birth = 'Birthday';
+  String bio = 'bio';
   String link = 'http://mybooks.in';
   final FirebaseFirestore fb = FirebaseFirestore.instance;
   String name = '';
@@ -40,11 +39,95 @@ class _profilePageState extends State<profilePage> {
     // TODO: implement initState
     super.initState();
     user();
+    getdetails();
   }
-
+  Future<DocumentSnapshot> getdetails() async {
+    print(uid);
+    var ref1= await fb.collection("users_writters").doc(uid);
+    var doc = ref1.get();
+    return doc;
+  }
+  Future<QuerySnapshot> getImages() {
+    return fb.collection("data_quotes").where('userkiid',isEqualTo: uid).get();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child:  ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Column(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: Image.network(pic).image,
+                          // image: Utility.imageFromBase64String(imgString).image ,
+                          fit: BoxFit.fill
+                      ),
+                    ),),
+                  Text(name),
+                ],
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+
+            ListTile(
+              title: Text('Admin'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) {
+                    return addpost() ;}),);
+              },
+            ),
+            ListTile(
+              title: Text('Sign Up'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) {
+                    return SignUpScreen();}),);
+              },
+            ),
+            ListTile(
+              title: Text('Log Out'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) {
+                    return LoginScreen();}),);
+              },
+            ),
+            ListTile(
+              title: Text('Feedback'),
+              onTap: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (_) {
+                //     return live_home() ;}),);
+              },
+            ),
+          ],
+        ),
+      ),
+
+      appBar: AppBar(   title: Text(
+        "Vibes Quotes",
+        style: TextStyle(
+          fontFamily: "tepeno",
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      ),
       body: Container(
         child: SingleChildScrollView(
             child: Column(
@@ -86,7 +169,8 @@ class _profilePageState extends State<profilePage> {
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(builder: (_) {
-                              return LoginFormValidation();
+                              print("data: $name $bio");
+                              return EditProfle(name:name, bio:bio,birth:birth,link:link);
                             }),),
                         ),
                         decoration: BoxDecoration(
@@ -96,99 +180,128 @@ class _profilePageState extends State<profilePage> {
                       ),
                     ],),
                   SizedBox(height: 5),
-                   Row(
-                     children: [
-                       Container(
-                         child: Column(
-                           children: [
-                             Text(name,
-                             textAlign: TextAlign.left,
-                                 style: TextStyle(
-                                     fontWeight: FontWeight.bold, color: Colors.brown)),
-                             SizedBox(height: 10),
-                             Text(birth,
-                                 textAlign: TextAlign.left,
-                                 style: TextStyle(
-                                     color: Colors.black26)),
-                             SizedBox(height: 5),
-                             Text(bio,
-                                 textAlign: TextAlign.left,
-                                 style: TextStyle(
-                                     color: Colors.black)),
+                  FutureBuilder(
+                    future: getdetails(),
+                    builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      if(snapshot.hasData && !snapshot.data!.exists){
+                        return InkWell(
+                          child: Container(
+                            width: 200,
+                            height: 30,
+                            color: Colors.deepOrangeAccent,
+                              child: Center(child: Text("Create profile",style: TextStyle(fontSize: 19,color: Colors.white,fontWeight: FontWeight.bold)))),
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) {
+                                print("data: $name $bio");
+                                return EditProfle(name:name, bio:bio,birth:birth,link:link);
+                              }),);
+                          },
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        birth =  snapshot.data!["birth"];
+                        name =snapshot.data!["userkanam"];
+                        bio = snapshot.data!["bio"];
+                        link = snapshot.data!["link"];
+                        return Row(
+                          children: [
+                            Container(
+                              child: Column(
+                                children: [
+                                  Text(name,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, color: Colors.brown)),
+                                  SizedBox(height: 10),
+                                  Text(birth,
+                                      //snapshot.data!["birth"],
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: Colors.black45)),
+                                  SizedBox(height: 5),
+                                  Text(bio,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: Colors.black)),
 
-                             SizedBox(height: 1),
-                             InkWell(
-                               child: Text(link,
-                                   textAlign: TextAlign.left,
-                                   style: TextStyle(
-                                       color: Colors.indigo)),
-                             ),
+                                  SizedBox(height: 1),
+                                  InkWell(
+                                    child: Text(link,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: Colors.indigo)),
+                                  ),
 
-                           ],
-                         ),
-                       ),
-                     ],
-                   )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ) ;
+                      }
+                      else return CircularProgressIndicator();
+                    },
+                  ),
+
 
                 ],
               ),
             ),
-
-            Container(
+             Container(
               height: 600,
               child: Scaffold(
                 body: Container(
-
                   child: SingleChildScrollView(
-                    child: Column(
+                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                            FutureBuilder(
                               future: getImages(),
-                              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                print(snapshot);
+                              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                               // print(snapshot.data!);
                                 if (snapshot.connectionState == ConnectionState.done) {
+                                  var size = MediaQuery.of(context).size;
+                                  final double itemheight = (size.height-kToolbarHeight-24)/2;
+                                  final double itemwidth = size.width/2;
                                   return GridView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     physics: ScrollPhysics(),
-                                    itemCount: snapshot.data!.data()!.length,
+                                    itemCount: snapshot.data!.docs.length,
                                     itemBuilder: (BuildContext context, int index) {
+
                                       return GestureDetector(
                                         child: InkWell(
                                           onTap:(){
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(builder: (_) {
-                                                return singleitem(url:snapshot.data![index]
-                                                    .data()["url"], name: snapshot.data![index]
-                                                    .data()["name"],picurl:snapshot.data![index]
-                                                    .data()["picurl"]) ;}),);
+                                                return singleitem(
+                                                    url:snapshot.data!.docs[index].data()["url"],
+                                                    name:snapshot.data!.docs[index].data()["name"],
+                                                    picurl:snapshot.data!.docs[index].data()["picurl"]
+                                                    ) ;}),);
                                           },
                                           child: Container(
+
                                             padding : EdgeInsets.all(3),
                                                   child: Center(
                                                     child: Image.network(
-                                                        snapshot.data!.data()![index]
-                                                            .data()["url"],
+                                                        snapshot.data!.docs[index].data()["url"],
                                                         errorBuilder: (BuildContext context,
                                                             Object exception,
                                                             StackTrace? stackTrace) {
                                                           return Icon(Icons.do_not_disturb);
-                                                        }, fit: BoxFit.fill),),),
+                                                        }, fit: BoxFit.cover),),),
                                         ),
                                       );
                                     }, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
+
                                   ),);
-                                } else if (snapshot.connectionState ==
-                                    ConnectionState.none) {
-                                  return Text("No data");
-                                }
-                                return CircularProgressIndicator();
-                              },
-                            ),
-                        ]))
+                                } else return CircularProgressIndicator();
+                              },),],),)
                 ),
               ),
             ),
@@ -200,13 +313,7 @@ class _profilePageState extends State<profilePage> {
     //TasksPage(uid1: user.uid, email: user.email, Name: user.displayName,pic: user.photoURL);
   }
 
-  Future<DocumentSnapshot> getImages() {
-    var ref1= fb.collection("users_writters").doc(uid);
-    var doc = ref1.get();
-    print(doc);
-    return doc;
 
-  }
 
   Future<User?> user() async {
     User? user = await FirebaseAuth.instance.currentUser;

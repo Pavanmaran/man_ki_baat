@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:the_hidden_writters/admin.dart';
+import 'package:the_hidden_writters/create1.dart';
 import 'package:the_hidden_writters/login.dart';
 import 'package:the_hidden_writters/profile.dart';
 import 'package:the_hidden_writters/signup.dart';
@@ -40,100 +42,8 @@ class _homePageState extends State<homePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child:  ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Column(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: Image.network(pic).image,
-                          // image: Utility.imageFromBase64String(imgString).image ,
-                          fit: BoxFit.fill
-                      ),
-                    ),),
-                  Text(Name),
-                ],
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
 
-            ListTile(
-              title: Text('Home'),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (_) {
-                //     return live_home() ;}),);
-              },
-            ),
-            ListTile(
-              title: Text('Sign Up'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) {
-                    return SignUpScreen();}),);
-              },
-            ),
-            ListTile(
-              title: Text('API'),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (_) {
-                //     return fileup() ;}),);
-              },
-            ),
-            ListTile(
-              title: Text('Log Out'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) {
-                    return LoginScreen();}),);
-              },
-            ),
-            ListTile(
-              title: Text('Feedback'),
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (_) {
-                //     return live_home() ;}),);
-              },
-            ),
-          ],
-        ),
-      ),
-      appBar: AppBar(   title: Text(
-        "Welcome : $Name",
-        style: TextStyle(
-          fontFamily: "tepeno",
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onPressed: () => signOutUser().then((value) {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                      (Route<dynamic> route) => false);
-            }),
-          ),
-        ],),
+
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -142,8 +52,8 @@ class _homePageState extends State<homePage> {
           },
           children: <Widget>[
         TasksPage(uid1:this.uid1, email:this.email, Name:this.Name,pic:pic),
-            addtask(uid1:this.uid1, email:this.email, Name:this.Name,pic:pic),
-            Container(color: Colors.blue,),
+            MyHomePage(),
+            Container(color: Colors.blue,child: Center(child:Text("Stories"))),
             profilePage(),
 
           ],

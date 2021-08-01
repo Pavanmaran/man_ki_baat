@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -140,6 +141,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late String email;
   late String password;
+  final FirebaseFirestore fb = FirebaseFirestore.instance;
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   void login() {
@@ -231,15 +233,21 @@ class _LoginScreenState extends State<LoginScreen> {
               */
               MaterialButton(
                 padding: EdgeInsets.zero,
-                onPressed: () => googleSignIn().whenComplete(() async {
-                  User? user = FirebaseAuth.instance.currentUser;
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => homePage(
-                          uid1: user!.uid,
-                          email: user.email.toString(),
-                          Name: user.displayName.toString(),
-                          pic: user.photoURL.toString())));
-                }),
+                onPressed: () =>
+                    googleSignIn().whenComplete(() async {
+                      User? user = FirebaseAuth.instance.currentUser;
+                      var users = fb.collection("users_writters");
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) {
+                            return homePage(
+                                uid1: user!.uid,
+                                email: user.email.toString(),
+                                Name: user.displayName.toString(),
+                                pic: user.photoURL.toString());
+
+
+                          }));
+                    }),
                 child: Image(
                   image: AssetImage('assets/images/sign_google.png'),
                   width: 260.0,
@@ -270,6 +278,9 @@ class _LoginScreenState extends State<LoginScreen> {
     )
     ,
     );
+  }
+  checkuser(){
+
   }
 }
 

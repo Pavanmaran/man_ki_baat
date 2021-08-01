@@ -4,44 +4,52 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:the_hidden_writters/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginFormValidation extends StatefulWidget {
+class EditProfle extends StatefulWidget {
+  final String name;
+  final String birth;
+  final String bio;
+  final String link;
+  EditProfle({ required this.name, required this.birth, required this.bio, required this.link});
   @override
-  _LoginFormValidationState createState() => _LoginFormValidationState();
+  _EditProfleState createState() => _EditProfleState(this.name,this.birth, this.bio,this.link);
 }
 
-class _LoginFormValidationState extends State<LoginFormValidation> {
+class _EditProfleState extends State<EditProfle> {
   String pic = 'https://firebasestorage.googleapis.com/v0/b/the-hidden-writters.appspot.com/o/files%2FXfCqF-2021-07-17%2022%3A46%3A52.146436-img.png?alt=media&token=3fb25a41-9b1d-4e5c-9cf7-72d241b9db40';
-  String birth = '19/01/1999';
-  String bio = 'Professional Writer';
-  String link = 'http://mybooks.in';
-  String name = '';
-  late TextEditingController _controller;
+
+  late TextEditingController _namecontroller;
   late TextEditingController birthdaycontroller;
   late TextEditingController biocontroller;
   late TextEditingController linkcontroller;
   late Map<String, dynamic>  updateMap;
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
+  late final String name;
+  final String birth;
+  final String bio;
+  final String link;
+  _EditProfleState(this.name,this.birth, this.bio,this.link);
+  final FirebaseFirestore fb = FirebaseFirestore.instance;
   @override
   void initState() {
 
     // TODO: implement initState
     super.initState();
     user();
+    print("$birth");
   }
 
   Future<User?> user() async {
     User? user = await FirebaseAuth.instance.currentUser;
     setState(() {
-      name = user!.displayName!;
-      pic = user.photoURL!;
+      pic = user!.photoURL!;
     });
   }
     Future<User?> updateProfile() async {
       User? user = await FirebaseAuth.instance.currentUser;
-      user!.updateDisplayName(_controller.text);
+      user!.updateDisplayName(_namecontroller.text);
       updateMap= {
-        'userkanam':name,
+        'userkiid':user.uid,
+        'userkanam':_namecontroller.text,
        'birth':birthdaycontroller.text,
        'bio': biocontroller.text,
        'link':linkcontroller.text,
@@ -132,12 +140,7 @@ class _LoginFormValidationState extends State<LoginFormValidation> {
                           iconSize: 20,
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
-                          onPressed: () =>
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) {
-                                  return LoginFormValidation();
-                                }),),
+                          onPressed: () {}
                         ),
                         decoration: BoxDecoration(
                           border: Border.all(width: 1, color: Colors.black26),
@@ -151,7 +154,7 @@ class _LoginFormValidationState extends State<LoginFormValidation> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
-                    controller: _controller=TextEditingController(text: name),
+                    controller: _namecontroller=TextEditingController(text: name),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Name',
